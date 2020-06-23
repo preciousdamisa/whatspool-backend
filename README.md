@@ -1,4 +1,4 @@
-# Questia (An online quiz app).
+# Whatspool (An online quiz app).
 
 TODO:
 - 
