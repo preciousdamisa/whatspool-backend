@@ -1,0 +1,34 @@
+{
+  "name": "whatspool-backend",
+  "version": "1.0.0",
+  "description": "The backend for an online games app.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/preciousdamisa/whatspool-backend.git"
+  },
+  "author": "Precious Damisa",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/preciousdamisa/whatspool-backend/issues"
+  },
+  "homepage": "https://github.com/preciousdamisa/whatspool-backend#readme",
+  "dependencies": {
+    "@hapi/joi": "^17.1.1",
+    "axios": "^0.19.2",
+    "bcryptjs": "^2.4.3",
+    "config": "^3.3.1",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-async-errors": "^3.1.1",
+    "joi-objectid": "^3.0.1",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.15",
+    "moment": "^2.27.0",
+    "mongoose": "^5.9.20",
+    "shortid": "^2.2.15"
+  }
+}
