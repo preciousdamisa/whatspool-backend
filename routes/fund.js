@@ -1,12 +1,14 @@
-const router = require("express").Router();
-const mongoose = require("mongoose");
+const router = require('express').Router();
+const mongoose = require('mongoose');
 
-const { User, getReferrer } = require("../models/user");
-const verifyTransfer = require("../services/verify-transfer");
+const { User, getReferrer } = require('../models/user');
+const { Transfer } = require('../models/transfer');
+const { Transaction } = require('../models/transaction');
+const verifyTransfer = require('../services/verify-transfer');
 
-router.post("/:fundInfo", async (req, res) => {
+router.post('/:fundInfo', async (req, res) => {
   const txref = req.query.txref;
-  const fundInfo = req.params.fundInfo.split("-");
+  const fundInfo = req.params.fundInfo.split('-');
 
   const userId = fundInfo[0];
   const amount = fundInfo[1];
@@ -14,7 +16,7 @@ router.post("/:fundInfo", async (req, res) => {
   const data = { txref, amount };
   const { status, code, chargeAmount } = await verifyTransfer(data);
 
-  if (status === "successful" && code === 0 && chargeAmount >= amount) {
+  if (status === 'successful' && code === 0 && chargeAmount >= amount) {
     const session = await mongoose.startSession();
     session.startTransaction();
     const opts = { session };
@@ -26,9 +28,28 @@ router.post("/:fundInfo", async (req, res) => {
       const referrer = await getReferrer(user);
 
       if (referrer) {
-        const referralBonus = 100;
+        const referralBonus = 25;
 
-        // TODO: The referral bonus should be taken from Pied Wallet's own account.
+        // TODO: Sender should be WhatsPool, with WhatsPool info (phone, user).
+
+        const transaction = new Transaction({
+          sender: {
+            name: 'WhatsPool',
+            phone: config.get('piedWalletPhone'),
+            user: user._id, // config.get('whatspoolUser')
+          },
+          receiver: {
+            name: `${user.firstName} ${user.lastName}`,
+            phone: user.phone,
+            user: user._id,
+          },
+          amount: referralBonus,
+          purpose: 'Referral bonus',
+          transactionId: nanoid(),
+          msg: 'Transaction successful',
+        });
+
+        await transaction.save(opts);
 
         await User.updateOne(
           { _id: user._id },
@@ -55,14 +76,27 @@ router.post("/:fundInfo", async (req, res) => {
         );
       }
 
+      const transferId = nanoid();
+
+      const transfer = new Transfer({
+        user: user._id,
+        amount,
+        desc: 'In transfer',
+        transferId,
+        mode: 'Flutterwave',
+        msg: 'Funding successful.',
+      });
+
+      await transfer.save(opts);
+
       await session.commitTransaction();
       session.endSession();
 
-      res.send("Funding successful!");
+      res.send('Funding successful!');
     } catch (ex) {
       await session.abortTransaction();
       session.endSession();
-      res.status(500).send("Error in funding wallet via e-gateway.");
+      res.status(500).send('Error in funding wallet via e-gateway.');
     }
   }
 });

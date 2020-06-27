@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const shortid = require("shortid");
-const httpService = require("../services/http-service");
+const httpService = require("../services/http");
 
 const { Participant, validate } = require("../models/participant");
 const AccessPin = require("../models/accessPin");

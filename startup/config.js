@@ -5,8 +5,8 @@ module.exports = function () {
     throw new Error("FATAL ERROR: db is not defined.");
   }
 
-  if (!config.get("jwtPrivateKey")) {
-    throw new Error("FATAL ERROR: jwtPrivateKey is not defined.");
+  if (!config.get("jwtAuthPrivateKey")) {
+    throw new Error("FATAL ERROR: jwtAuthPrivateKey is not defined.");
   }
 
   if (!config.get("flutterwaveSecretKey")) {

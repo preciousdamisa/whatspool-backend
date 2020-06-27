@@ -1,7 +1,7 @@
-const mongoose = require("mongoose");
-const Joi = require("@hapi/joi");
-const jwt = require("jsonwebtoken");
-const config = require("config");
+const mongoose = require('mongoose');
+const Joi = require('@hapi/joi');
+const jwt = require('jsonwebtoken');
+const config = require('config');
 
 const Schema = mongoose.Schema;
 
@@ -10,14 +10,14 @@ const userSchema = new Schema(
     firstName: {
       type: String,
       minlength: 2,
-      maxlength: 25,
+      maxlength: 50,
       trim: true,
       required: true,
     },
     lastName: {
       type: String,
       minlength: 2,
-      maxlength: 25,
+      maxlength: 50,
       trim: true,
       required: true,
     },
@@ -83,16 +83,15 @@ userSchema.methods.genToken = function () {
       lastName: this.lastName,
       email: this.email,
       phone: this.phone,
-      walletId: this.walletId,
     },
-    config.get("jwtPrivateKey"),
+    config.get('jwtAuthPrivateKey'),
     { expiresIn: 3600 }
   );
 
   return token;
 };
 
-const User = mongoose.model("User", userSchema);
+const User = mongoose.model('User', userSchema);
 
 function validate(data) {
   const schema = Joi.object({

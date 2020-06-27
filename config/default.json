@@ -1,6 +1,6 @@
 {
-    "port": "8080",
-    "db": "mongodb://localhost/questia",
-    "jwtPrivateKey": "unsecureJwtPrivateKey",
+    "port": "4000",
+    "db": "mongodb://localhost/whatspool",
+    "jwtAuthPrivateKey": "unsecureJwtAuthPrivateKey",
     "flutterwaveSecretKey": "FLWSECK_TEST-b3c7c8de99decea88a66e17e1f8da899-X"
 }

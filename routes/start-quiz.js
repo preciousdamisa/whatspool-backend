@@ -1,7 +1,6 @@
 const router = require("express").Router();
 
 const QuizTime = require("../models/quiz-time");
-const ioService = require("../services/io-service");
 
 router.post("/", async (req, res) => {
   const result = await QuizTime.find();

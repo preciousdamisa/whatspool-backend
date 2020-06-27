@@ -1,11 +1,11 @@
-const router = require("express").Router();
-const Joi = require("@hapi/joi");
-const _ = require("lodash");
-const bcrypt = require("bcryptjs");
+const router = require('express').Router();
+const Joi = require('@hapi/joi');
+const _ = require('lodash');
+const bcrypt = require('bcryptjs');
 
-const { User } = require("../models/user");
+const { User } = require('../models/user');
 
-router.post("/", async (req, res) => {
+router.post('/', async (req, res) => {
   const { error } = validate(req.body);
   if (error) {
     return res.status(422).send(error.details[0].message);
@@ -13,27 +13,27 @@ router.post("/", async (req, res) => {
 
   const user = await User.findOne({ email: req.body.email });
   if (!user) {
-    return res.status(400).send("Invalid email or password.");
+    return res.status(400).send('Invalid email or password.');
   }
 
   const isPassword = await bcrypt.compare(req.body.password, user.password);
   if (!isPassword) {
-    return res.status(400).send("Invalid email or password.");
+    return res.status(400).send('Invalid email or password.');
   }
 
   const token = user.genToken();
 
   res
-    .header("x-auth-token", token)
-    .header("access-control-expose-headers", "x-auth-token")
+    .header('x-auth-token', token)
+    .header('access-control-expose-headers', 'x-auth-token')
     .send(
       _.pick(user, [
-        "_id",
-        "firstName",
-        "lastName",
-        "email",
-        "phone",
-        "balance"
+        '_id',
+        'firstName',
+        'lastName',
+        'email',
+        'phone',
+        'referralCode',
       ])
     );
 });

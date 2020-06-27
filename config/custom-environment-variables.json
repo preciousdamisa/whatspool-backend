@@ -1,5 +1,5 @@
 {
-    "db": "questia_db",
-    "jwtPrivateKey": "questia_jwtPrivateKey",
-    "flutterwaveSecretKey": "pied-wallet_flutterwaveSecretKey"
+    "db": "whatspool_db",
+    "jwtAuthPrivateKey": "whatspool_jwtAuthPrivateKey",
+    "flutterwaveSecretKey": "whatspool_flutterwaveSecretKey"
 }

@@ -1,11 +1,20 @@
-const router = require("express").Router();
-const _ = require("lodash");
-const bcrypt = require("bcryptjs");
-const shortid = require("shortid");
+const router = require('express').Router();
+const _ = require('lodash');
+const bcrypt = require('bcryptjs');
+const shortid = require('shortid');
 
-const { User, validate } = require("../models/user");
+const { User, validate } = require('../models/user');
+const auth = require('../middleware/auth');
 
-router.post("/", async (req, res) => {
+router.get('/me', auth, async (req, res) => {
+  const user = await User.findById(req.user._id).select(
+    '-password -__v -createdAt -updatedAt'
+  );
+
+  res.send(user);
+});
+
+router.post('/', async (req, res) => {
   const { error } = validate(req.body);
   if (error) {
     return res.status(422).send(error.details[0].message);
@@ -13,11 +22,11 @@ router.post("/", async (req, res) => {
 
   let user = await User.findOne({ email: req.body.email });
   if (user) {
-    return res.status(400).send("User already registered.");
+    return res.status(400).send('User already registered.');
   }
 
   user = new User(
-    _.pick(req.body, ["firstName", "lastName", "email", "phone"])
+    _.pick(req.body, ['firstName', 'lastName', 'email', 'phone'])
   );
 
   const hashed = await bcrypt.hash(req.body.password, 12);
@@ -39,7 +48,7 @@ router.post("/", async (req, res) => {
     if (fetchedUser) {
       referrer = fetchedUser.referralCode;
     } else {
-      return res.status(400).send("No user with the given referral code.");
+      return res.status(400).send('No user with the given referral code.');
     }
   }
 
@@ -57,16 +66,16 @@ router.post("/", async (req, res) => {
 
   res
     .status(201)
-    .header("x-auth-token", token)
-    .header("access-control-expose-headers", "x-auth-token")
+    .header('x-auth-token', token)
+    .header('access-control-expose-headers', 'x-auth-token')
     .send(
       _.pick(user, [
-        "_id",
-        "firstName",
-        "lastName",
-        "email",
-        "phone",
-        "balance",
+        '_id',
+        'firstName',
+        'lastName',
+        'email',
+        'phone',
+        'balance',
       ])
     );
 });

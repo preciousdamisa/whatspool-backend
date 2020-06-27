@@ -1,10 +1,12 @@
-const router = require("express").Router();
-const mongoose = require("mongoose");
-const Joi = require("@hapi/joi");
+const router = require('express').Router();
+const mongoose = require('mongoose');
+const Joi = require('@hapi/joi');
 
-const { User, getReferrer } = require("../models/user");
+const { User, getReferrer } = require('../models/user');
+const { Transfer } = require('../models/transfer');
+const { Transaction } = require('../models/transaction');
 
-router.post("/", async (req, res) => {
+router.post('/', async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(422).send(error.details[0].message);
 
@@ -24,7 +26,24 @@ router.post("/", async (req, res) => {
     if (referrer) {
       const referralBonus = 100;
 
-      // TODO: The referral bonus should be taken from QuestiA's own account.
+      const transaction = new Transaction({
+        sender: {
+          name: 'WhatsPool',
+          phone: config.get('piedWalletPhone'),
+          user: user._id, // config.get('whatspoolUser')
+        },
+        receiver: {
+          name: `${user.firstName} ${user.lastName}`,
+          phone: user.phone,
+          user: user._id,
+        },
+        amount: referralBonus,
+        purpose: 'Referral bonus',
+        transactionId: nanoid(),
+        msg: 'Transaction successful',
+      });
+
+      await transaction.save(opts);
 
       await User.updateOne(
         { _id: user._id },
@@ -51,14 +70,27 @@ router.post("/", async (req, res) => {
       );
     }
 
+    const transferId = nanoid();
+
+    const transfer = new Transfer({
+      user: user._id,
+      amount,
+      desc: 'In transfer',
+      transferId,
+      mode: 'Bank Tranfer',
+      msg: 'Funding successful.',
+    });
+
+    await transfer.save(opts);
+
     await session.commitTransaction();
     session.endSession();
 
-    res.send("Funding successful!");
+    res.send('Funding successful!');
   } catch (ex) {
     await session.abortTransaction();
     session.endSession();
-    res.status(500).send("Error in funding wallet manually.");
+    res.status(500).send('Error in funding wallet manually.');
   }
 });
 

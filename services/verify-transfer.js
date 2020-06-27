@@ -1,6 +1,6 @@
 const config = require("config");
 
-const http = require("./http-service");
+const http = require("./http");
 
 const url =
   "https://ravesandboxapi.flutterwave.com/flwv3-pug/getpaidx/api/v2/verify";
