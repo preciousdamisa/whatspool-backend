@@ -75,7 +75,7 @@ router.post('/', async (req, res) => {
         'lastName',
         'email',
         'phone',
-        'balance',
+        'referralCode',
       ])
     );
 });
