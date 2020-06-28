@@ -25,38 +25,60 @@ router.post('/', async (req, res) => {
   // Check if there is enough in normal balance.
   // check if there is enough in both balances.
 
-  let whereToCharge;
+  const amount = req.body.amount;
 
-  if (user.referralBonus >= 100) {
-    user.updateOne({ _id: user._id }, { $inc: { referralBonus: -amount } });
-  } else if (user.balance >= 100) {
-    // Add ref bonus to normal balance.
-    whereToCharge = 'balance';
-  } else if (user.balance + user.referralBonus >= 100) {
-    // Add ref bonus to normal b
-    whereToCharge = 'bothBalances';
-  }
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  const opts = { session };
 
-  // Create a payment transaction.
+  try {
+    if (user.referralBonus >= 100) {
+      await user.updateOne(
+        { _id: user._id },
+        { $inc: { referralBonus: -amount } },
+        opts
+      );
+    } else if (user.balance >= 100) {
+      // Add ref bonus to normal balance.
+      await user.updateOne(
+        { _id: user._id },
+        { $inc: { balance: -amount } },
+        opts
+      );
 
-  const participantAccessPin = shortid();
+      const remainingBalance = user.balance + user.referralBonus - amount;
 
-  let participant = new Participant({
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
-    email: req.body.email,
-    phone: req.body.phone,
-    walletId: req.body.walletId,
-    accessPin: participantAccessPin,
-  });
+      user.updateOne(
+        { _id: user._id },
+        { $set: { balance: remainingBalance } },
+        opts
+      );
+    } else if (user.balance + user.referralBonus >= 100) {
+      // Add ref bonus to normal b
+      whereToCharge = 'bothBalances';
+    }
 
-  const accessPin = new AccessPin({
-    accessPin: participantAccessPin,
-  });
+    // Create a payment transaction.
 
-  await accessPin.save();
+    const participantAccessPin = shortid();
 
-  participant = await participant.save();
+    let participant = new Participant({
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      email: req.body.email,
+      phone: req.body.phone,
+      walletId: req.body.walletId,
+      accessPin: participantAccessPin,
+    });
+
+    const accessPin = new AccessPin({
+      accessPin: participantAccessPin,
+    });
+
+    await accessPin.save();
+
+    participant = await participant.save();
+  } catch (ex) {}
   res.send(participant);
 });
 
