@@ -34,14 +34,6 @@ const participantSchema = new Schema(
       required: true,
       unique: true,
     },
-    walletId: {
-      type: String,
-      minlength: 11,
-      maxlength: 11,
-      required: true,
-      trim: true,
-      unique: true,
-    },
     accessPin: {
       type: String,
       minlength: 1,
@@ -85,8 +77,6 @@ function validateParticipant(data) {
       .email({ minDomainSegments: 2 })
       .required(),
     phone: Joi.string().min(11).max(11).required(),
-    walletId: Joi.string().min(11).max(11).required(),
-    transactionPin: Joi.string().min(4).max(6).trim().required(),
     amount: Joi.number().min(100).max(100).required(),
     purpose: Joi.string().min(2).max(250).trim().required(),
   });

@@ -1,46 +1,43 @@
-const router = require("express").Router();
-const shortid = require("shortid");
-const httpService = require("../services/http");
+const router = require('express').Router();
+const shortid = require('shortid');
 
-const { Participant, validate } = require("../models/participant");
-const AccessPin = require("../models/accessPin");
+const { User } = require('../models/user');
+const { Participant, validate } = require('../models/participant');
+const AccessPin = require('../models/accessPin');
 
-router.get("/:walletId", async (req, res) => {
+router.get('/:walletId', async (req, res) => {
   const walletId = req.params.walletId;
 
   const participant = await Participant.findOne({ walletId });
   if (!participant)
-    return res.status(404).send("No participant with the given Wallet ID.");
+    return res.status(404).send('No participant with the given Wallet ID.');
 
   res.send(participant);
 });
 
-router.post("/", async (req, res) => {
+router.post('/', async (req, res) => {
   let { error } = validate(req.body);
   if (error) return res.status(422).send(error.details[0].message);
 
-  let response = await httpService.get("/balance", {
-    data: {
-      walletId: req.body.walletId,
-    },
-  });
+  const user = await User.findOne({ phone: req.body.phone });
 
-  if (response.data.balance < 100) {
-    return res.status(400).send("Insufficient balance.");
+  // Check if there is enough in ref bonus.
+  // Check if there is enough in normal balance.
+  // check if there is enough in both balances.
+
+  let whereToCharge;
+
+  if (user.referralBonus >= 100) {
+    user.updateOne({ _id: user._id }, { $inc: { referralBonus: -amount } });
+  } else if (user.balance >= 100) {
+    // Add ref bonus to normal balance.
+    whereToCharge = 'balance';
+  } else if (user.balance + user.referralBonus >= 100) {
+    // Add ref bonus to normal b
+    whereToCharge = 'bothBalances';
   }
 
-  response = await httpService.post("/transactions", {
-    walletId: req.body.walletId,
-    transactionPin: req.body.transactionPin,
-    amount: req.body.amount,
-    purpose: req.body.purpose,
-  });
-
-  error = response && response.status >= 400 && response.status <= 500;
-
-  if (error) {
-    return res.status(response.status).send(response.data);
-  }
+  // Create a payment transaction.
 
   const participantAccessPin = shortid();
 

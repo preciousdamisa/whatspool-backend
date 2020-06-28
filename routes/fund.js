@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const mongoose = require('mongoose');
+const { nanoid } = require("nanoid");
 
 const { User, getReferrer } = require('../models/user');
 const { Transfer } = require('../models/transfer');
