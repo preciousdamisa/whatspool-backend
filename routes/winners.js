@@ -23,15 +23,15 @@ router.get("/", async (req, res) => {
 });
 
 function getFirstPlaceWinners(winners) {
-  return winners.slice(0, 2);
+  return winners.slice(0, 1);
 }
 
 function getSecondPlaceWinners(winners) {
-  return winners.slice(2, 5);
+  return winners.slice(1, 3);
 }
 
 function getThirdPlaceWinners(winners) {
-  return winners.slice(5, 10);
+  return winners.slice(3, 6);
 }
 
 module.exports = router;
