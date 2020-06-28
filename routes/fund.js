@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const mongoose = require('mongoose');
-const { nanoid } = require("nanoid");
+const { nanoid } = require('nanoid');
 
 const { User, getReferrer } = require('../models/user');
 const { Transfer } = require('../models/transfer');
@@ -88,12 +88,16 @@ router.post('/:fundInfo', async (req, res) => {
         msg: 'Funding successful.',
       });
 
-      await transfer.save();
+      await transfer.save(opts);
 
       await session.commitTransaction();
       session.endSession();
 
-      res.send('Funding successful!');
+      res.render('success', {
+        transferId: transfer._id,
+        desc: transfer.desc,
+        amount,
+      });
     } catch (ex) {
       console.log(ex);
       await session.abortTransaction();
