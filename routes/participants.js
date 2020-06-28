@@ -110,6 +110,7 @@ router.post('/', async (req, res) => {
 
     res.send(participant);
   } catch (ex) {
+    console.log(ex);
     await session.abortTransaction();
     session.endSession();
     res.status(500).send('Something failed (T). Please try again');

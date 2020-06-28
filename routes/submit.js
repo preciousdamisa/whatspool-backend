@@ -1,12 +1,12 @@
-const router = require("express").Router();
-const Joi = require("@hapi/joi");
+const router = require('express').Router();
+const Joi = require('@hapi/joi');
 const mongoose = require('mongoose');
 
-const { Participant } = require("../models/participant");
-const { Question } = require("../models/question");
-const { Winner } = require("../models/winner");
+const { Participant } = require('../models/participant');
+const { Question } = require('../models/question');
+const { Winner } = require('../models/winner');
 
-router.post("/", async (req, res) => {
+router.post('/', async (req, res) => {
   const { error } = validateSubmitData(req.body);
   if (error) {
     return res.status(422).send(error.details[0].message);
@@ -14,17 +14,17 @@ router.post("/", async (req, res) => {
 
   const participant = await Participant.findById(req.body.participantId);
   if (!participant) {
-    return res.status(404).send("No participant with the given ID.");
+    return res.status(404).send('No participant with the given ID.');
   }
 
   const question = await Question.findOne({ no: req.body.questionNumber });
   if (!question) {
-    return res.status(404).send("Question not found.");
+    return res.status(404).send('Question not found.');
   }
 
   const session = await mongoose.startSession();
   session.startTransaction();
-  
+
   const opts = { session };
 
   try {
@@ -63,7 +63,7 @@ router.post("/", async (req, res) => {
           await winner.save(opts);
 
           res.send({
-            msg: "Answer submitted. Correct answer. All questions answered.",
+            msg: 'Answer submitted. Correct answer. All questions answered.',
             status: 1,
           });
         } else {
@@ -80,7 +80,7 @@ router.post("/", async (req, res) => {
           );
 
           res.send({
-            msg: "Answer submitted. Wrong answer. All questions answered.",
+            msg: 'Answer submitted. Wrong answer. All questions answered.',
             status: 1,
           });
         }
@@ -105,7 +105,7 @@ router.post("/", async (req, res) => {
             opts
           );
 
-          res.send("Answer submitted. Correct answer.");
+          res.send('Answer submitted. Correct answer.');
         } else {
           await Participant.updateOne(
             { _id: req.body.participantId },
@@ -113,11 +113,11 @@ router.post("/", async (req, res) => {
             opts
           );
 
-          res.send("Answer submitted. Wrong answer.");
+          res.send('Answer submitted. Wrong answer.');
         }
       }
     } else {
-      res.status(400).send("Participant has finished quiz.");
+      res.status(400).send('Participant has finished quiz.');
     }
 
     await session.commitTransaction();
@@ -125,7 +125,7 @@ router.post("/", async (req, res) => {
   } catch (ex) {
     await session.abortTransaction();
     session.endSession();
-    res.send("Something failed (T). Please try again.");
+    res.status(500).send('Submitting failed. Please try again.');
   }
 });
 
