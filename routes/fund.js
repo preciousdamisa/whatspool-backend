@@ -88,7 +88,7 @@ router.post('/:fundInfo', async (req, res) => {
         msg: 'Funding successful.',
       });
 
-      await transfer.save(opts);
+      await transfer.save();
 
       await session.commitTransaction();
       session.endSession();
