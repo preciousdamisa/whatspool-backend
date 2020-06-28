@@ -123,6 +123,8 @@ router.post('/', async (req, res) => {
     await session.commitTransaction();
     session.endSession();
   } catch (ex) {
+    console.log(ex);
+    
     await session.abortTransaction();
     session.endSession();
     res.status(500).send('Submitting failed. Please try again.');
