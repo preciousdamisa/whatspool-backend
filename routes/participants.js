@@ -25,44 +25,36 @@ router.post('/', async (req, res) => {
 
   const amount = req.body.amount;
 
-  const session = await mongoose.startSession();
-  session.startTransaction();
-  const opts = { session };
+  // const session = await mongoose.startSession();
+  // session.startTransaction();
+  // const opts = { session };
 
   try {
     if (user.referralBonus >= 100) {
       await User.updateOne(
         { _id: user._id },
-        { $inc: { referralBonus: -amount } },
-        opts
+        { $inc: { referralBonus: -amount } }
       );
     } else if (user.balance >= 100) {
-      await User.updateOne(
-        { _id: user._id },
-        { $inc: { balance: -amount } },
-        opts
-      );
+      await User.updateOne({ _id: user._id }, { $inc: { balance: -amount } });
 
       const remainingBalance = user.balance + user.referralBonus - amount;
 
       await User.updateOne(
         { _id: user._id },
-        { $set: { balance: remainingBalance } },
-        opts
+        { $set: { balance: remainingBalance } }
       );
     } else if (user.balance + user.referralBonus >= 100) {
       await User.updateOne(
         { _id: user._id },
-        { $inc: { referralBonus: -user.referralBonus } },
-        opts
+        { $inc: { referralBonus: -user.referralBonus } }
       );
 
       const remainingBalance = user.balance + user.referralBonus - amount;
 
       await User.updateOne(
         { _id: user._id },
-        { $set: { balance: remainingBalance } },
-        opts
+        { $set: { balance: remainingBalance } }
       );
     } else {
       return res.status(400).send('Insufficient balance.');
@@ -85,7 +77,7 @@ router.post('/', async (req, res) => {
       msg: 'Transaction successful',
     });
 
-    await transaction.save(opts);
+    await transaction.save();
 
     const participantAccessPin = shortid();
 
@@ -101,19 +93,14 @@ router.post('/', async (req, res) => {
       accessPin: participantAccessPin,
     });
 
-    await accessPin.save(opts);
+    await accessPin.save();
 
-    participant = await participant.save(opts);
-
-    await session.commitTransaction();
-    session.endSession();
+    participant = await participant.save();
 
     res.send(participant);
   } catch (ex) {
     console.log(ex);
-    await session.abortTransaction();
-    session.endSession();
-    res.status(500).send('Something failed (T). Please try again');
+    res.status(500).send('Something failed. Please try again');
   }
 });
 
