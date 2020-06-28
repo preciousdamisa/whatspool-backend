@@ -54,7 +54,6 @@ router.post("/", async (req, res) => {
             lastName: participant.lastName,
             email: participant.email,
             phone: participant.phone,
-            walletId: participant.walletId,
             accessPin: participant.accessPin,
             score: participant.score + 1,
             finished: true,

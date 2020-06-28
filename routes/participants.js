@@ -1,16 +1,18 @@
 const router = require('express').Router();
 const shortid = require('shortid');
+const mongoose = require('mongoose');
+const { nanoid } = require('nanoid');
 
 const { User } = require('../models/user');
 const { Participant, validate } = require('../models/participant');
 const AccessPin = require('../models/accessPin');
+const { Transaction } = require('../models/transaction');
 
-router.get('/:walletId', async (req, res) => {
-  const walletId = req.params.walletId;
+router.get('/:phone', async (req, res) => {
+  const phone = req.params.phone;
 
-  const participant = await Participant.findOne({ walletId });
-  if (!participant)
-    return res.status(404).send('No participant with the given Wallet ID.');
+  const participant = await Participant.findOne({ phone });
+  if (!participant) return res.status(404).send("User isn't registered yet.");
 
   res.send(participant);
 });
@@ -21,44 +23,61 @@ router.post('/', async (req, res) => {
 
   const user = await User.findOne({ phone: req.body.phone });
 
-  // Check if there is enough in ref bonus.
-  // Check if there is enough in normal balance.
-  // check if there is enough in both balances.
-
   const amount = req.body.amount;
 
-  const session = await mongoose.startSession();
-  session.startTransaction();
-  const opts = { session };
+  // const session = await mongoose.startSession();
+  // session.startTransaction();
+  // const opts = { session };
 
   try {
     if (user.referralBonus >= 100) {
-      await user.updateOne(
+      await User.updateOne(
         { _id: user._id },
-        { $inc: { referralBonus: -amount } },
-        opts
+        { $inc: { referralBonus: -amount } }
       );
     } else if (user.balance >= 100) {
-      // Add ref bonus to normal balance.
-      await user.updateOne(
+      await User.updateOne({ _id: user._id }, { $inc: { balance: -amount } });
+
+      const remainingBalance = user.balance + user.referralBonus - amount;
+
+      await User.updateOne(
         { _id: user._id },
-        { $inc: { balance: -amount } },
-        opts
+        { $set: { balance: remainingBalance } }
+      );
+    } else if (user.balance + user.referralBonus >= 100) {
+      await User.updateOne(
+        { _id: user._id },
+        { $inc: { referralBonus: -user.referralBonus } }
       );
 
       const remainingBalance = user.balance + user.referralBonus - amount;
 
-      user.updateOne(
+      await User.updateOne(
         { _id: user._id },
-        { $set: { balance: remainingBalance } },
-        opts
+        { $set: { balance: remainingBalance } }
       );
-    } else if (user.balance + user.referralBonus >= 100) {
-      // Add ref bonus to normal b
-      whereToCharge = 'bothBalances';
+    } else {
+      return res.status(400).send('Insufficient balance.');
     }
 
-    // Create a payment transaction.
+    const transaction = new Transaction({
+      sender: {
+        name: `${user.firstName} ${user.lastName}`,
+        phone: user.phone,
+        user: user._id, // config.get('whatspoolUser')
+      },
+      receiver: {
+        name: `WhatsPool`,
+        phone: '09066581852',
+        user: user._id,
+      },
+      amount,
+      purpose: 'WhatsPool Registration',
+      transactionId: nanoid(),
+      msg: 'Transaction successful',
+    });
+
+    await transaction.save();
 
     const participantAccessPin = shortid();
 
@@ -67,7 +86,6 @@ router.post('/', async (req, res) => {
       lastName: req.body.lastName,
       email: req.body.email,
       phone: req.body.phone,
-      walletId: req.body.walletId,
       accessPin: participantAccessPin,
     });
 
@@ -78,8 +96,12 @@ router.post('/', async (req, res) => {
     await accessPin.save();
 
     participant = await participant.save();
-  } catch (ex) {}
-  res.send(participant);
+
+    res.send(participant);
+  } catch (ex) {
+    console.log(ex);
+    res.status(500).send('Something failed. Please try again');
+  }
 });
 
 module.exports = router;

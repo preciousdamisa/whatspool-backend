@@ -19,13 +19,13 @@ router.post("/", async (req, res) => {
     res.status(200).send({ startTime, endTime, duration, remainingTime });
   } else if (currentTime > endTime) {
     res.status(400).send({
-      msg: "QuestiA is over!",
+      msg: "WhatsPool is over!",
       status: "after",
       data: { startTime, endTime },
     });
   } else {
     res.status(400).send({
-      msg: "Not yet time for QuestiA.",
+      msg: "Not yet time for WhatsPool.",
       status: "before",
       data: { startTime, endTime },
     });

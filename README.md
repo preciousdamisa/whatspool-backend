@@ -2,6 +2,7 @@
 
 TODO:
 
+- Use transactions in creating a participant.
 - In funding (Flutterwave and manual), creating a transaction, Sender should be WhatsPool, with WhatsPool info (phone, user).
 
 After Launch

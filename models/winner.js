@@ -33,14 +33,6 @@ const winnerSchema = new Schema(
       required: true,
       unique: true,
     },
-    walletId: {
-      type: String,
-      minlength: 11,
-      maxlength: 11,
-      required: true,
-      trim: true,
-      unique: true,
-    },
     accessPin: {
       type: String,
       minlength: 1,

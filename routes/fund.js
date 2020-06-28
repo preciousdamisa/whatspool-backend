@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const mongoose = require('mongoose');
 const { nanoid } = require('nanoid');
+const config = require('config');
 
 const { User, getReferrer } = require('../models/user');
 const { Transfer } = require('../models/transfer');
@@ -36,7 +37,7 @@ router.post('/:fundInfo', async (req, res) => {
         const transaction = new Transaction({
           sender: {
             name: 'WhatsPool',
-            phone: config.get('piedWalletPhone'),
+            phone: config.get('whatspoolPhone'),
             user: user._id, // config.get('whatspoolUser')
           },
           receiver: {
