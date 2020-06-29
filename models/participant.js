@@ -1,10 +1,15 @@
-const mongoose = require("mongoose");
-const Joi = require("@hapi/joi");
+const mongoose = require('mongoose');
+const Joi = require('@hapi/joi');
 
 const Schema = mongoose.Schema;
 
 const participantSchema = new Schema(
   {
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
     firstName: {
       type: String,
       minlength: 2,
@@ -56,7 +61,7 @@ const participantSchema = new Schema(
     },
     finished: {
       type: Boolean,
-      default: false
+      default: false,
     },
     answers: {},
     metadata: {},
@@ -64,10 +69,11 @@ const participantSchema = new Schema(
   { timestamps: true }
 );
 
-const Participant = mongoose.model("Participant", participantSchema);
+const Participant = mongoose.model('Participant', participantSchema);
 
 function validateParticipant(data) {
   const schema = Joi.object({
+    userId: Joi.string().min(1).max(250).trim().required(),
     firstName: Joi.string().min(2).max(250).trim().required(),
     lastName: Joi.string().min(2).max(250).trim().required(),
     email: Joi.string()

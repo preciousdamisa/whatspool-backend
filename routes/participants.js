@@ -8,10 +8,9 @@ const { Participant, validate } = require('../models/participant');
 const AccessPin = require('../models/accessPin');
 const { Transaction } = require('../models/transaction');
 
-router.get('/:phone', async (req, res) => {
-  const phone = req.params.phone;
-
-  const participant = await Participant.findOne({ phone });
+router.get('/:userId', async (req, res) => {
+  const participant = await Participant.findById(req.params.userId);
+  
   if (!participant) return res.status(404).send("User isn't registered yet.");
 
   res.send(participant);
@@ -21,7 +20,7 @@ router.post('/', async (req, res) => {
   let { error } = validate(req.body);
   if (error) return res.status(422).send(error.details[0].message);
 
-  const user = await User.findOne({ phone: req.body.phone });
+  const user = await User.findById(req.body.userId);
 
   const amount = req.body.amount;
 
@@ -90,6 +89,7 @@ router.post('/', async (req, res) => {
     const participantAccessPin = shortid();
 
     let participant = new Participant({
+      user: req.body.userId,
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       email: req.body.email,
@@ -111,7 +111,7 @@ router.post('/', async (req, res) => {
     res.send(participant);
   } catch (ex) {
     console.log(ex);
-    
+
     await session.abortTransaction();
     session.endSession();
     res.status(500).send('Something failed (T). Please try again');
