@@ -9,7 +9,7 @@ const transactionSchema = new Schema(
   {
     amount: {
       type: Number,
-      min: 50,
+      min: 25,
       max: 10000,
       required: true,
     },

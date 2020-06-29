@@ -25,7 +25,7 @@ router.post('/', async (req, res) => {
     const referrer = await getReferrer(user);
 
     if (referrer) {
-      const referralBonus = 100;
+      const referralBonus = 25;
 
       const transaction = new Transaction({
         sender: {
