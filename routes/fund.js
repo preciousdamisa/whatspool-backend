@@ -100,6 +100,8 @@ router.post('/:fundInfo', async (req, res) => {
         amount,
       });
     } catch (ex) {
+      console.log(ex);
+      
       await session.abortTransaction();
       session.endSession();
       res.status(500).send('Error in funding wallet via e-gateway.');
