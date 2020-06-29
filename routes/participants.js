@@ -8,8 +8,8 @@ const { Participant, validate } = require('../models/participant');
 const AccessPin = require('../models/accessPin');
 const { Transaction } = require('../models/transaction');
 
-router.get('/:userId', async (req, res) => {
-  const participant = await Participant.findById(req.params.userId);
+router.get('/:phone', async (req, res) => {
+  const participant = await Participant.findOne({ phone: req.params.phone });
   
   if (!participant) return res.status(404).send("User isn't registered yet.");
 
