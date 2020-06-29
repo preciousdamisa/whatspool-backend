@@ -49,18 +49,20 @@ router.post('/', async (req, res) => {
             opts
           );
 
-          const winner = new Winner({
-            firstName: participant.firstName,
-            lastName: participant.lastName,
-            email: participant.email,
-            phone: participant.phone,
-            accessPin: participant.accessPin,
-            score: participant.score + 1,
-            finished: true,
-            metadata: { answeredAll: true },
-          });
+          if (participant.score === 9) {
+            const winner = new Winner({
+              firstName: participant.firstName,
+              lastName: participant.lastName,
+              email: participant.email,
+              phone: participant.phone,
+              accessPin: participant.accessPin,
+              score: participant.score + 1,
+              finished: true,
+              metadata: { answeredAll: true },
+            });
 
-          await winner.save(opts);
+            await winner.save(opts);
+          }
 
           res.send({
             msg: 'Answer submitted. Correct answer. All questions answered.',
@@ -124,7 +126,7 @@ router.post('/', async (req, res) => {
     session.endSession();
   } catch (ex) {
     console.log(ex);
-    
+
     await session.abortTransaction();
     session.endSession();
     res.status(500).send('Submitting failed. Please try again.');
