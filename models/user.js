@@ -105,10 +105,10 @@ function validate(data) {
       .required(),
     password: Joi.string().min(5).max(250).trim().required(),
     phone: Joi.string().min(11).max(11).required(),
-    referrer: Joi.string(),
+    referrer: Joi.string().min(1).max(250).trim(),
   });
 
-  return schema.validate(data);
+  return schema.validate(data, { allowUnknown: true });
 }
 
 async function getReferrer(user) {
