@@ -1,16 +1,14 @@
 const router = require('express').Router();
-const shortid = require('shortid');
 const mongoose = require('mongoose');
 const { nanoid } = require('nanoid');
 
 const { User } = require('../models/user');
 const { Participant, validate } = require('../models/participant');
-const AccessPin = require('../models/accessPin');
 const { Transaction } = require('../models/transaction');
 
 router.get('/:phone', async (req, res) => {
   const participant = await Participant.findOne({ phone: req.params.phone });
-  
+
   if (!participant) return res.status(404).send("User isn't registered yet.");
 
   res.send(participant);
@@ -86,22 +84,13 @@ router.post('/', async (req, res) => {
 
     await transaction.save(opts);
 
-    const participantAccessPin = shortid();
-
     let participant = new Participant({
       user: req.body.userId,
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       email: req.body.email,
       phone: req.body.phone,
-      accessPin: participantAccessPin,
     });
-
-    const accessPin = new AccessPin({
-      accessPin: participantAccessPin,
-    });
-
-    await accessPin.save(opts);
 
     participant = await participant.save(opts);
 

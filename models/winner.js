@@ -33,14 +33,6 @@ const winnerSchema = new Schema(
       required: true,
       unique: true,
     },
-    accessPin: {
-      type: String,
-      minlength: 1,
-      maxlength: 250,
-      unique: true,
-      trim: true,
-      required: true,
-    },
     score: {
       type: Number,
       default: 0,
