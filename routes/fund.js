@@ -41,9 +41,9 @@ router.post('/:fundInfo', async (req, res) => {
             user: user._id, // config.get('whatspoolUser')
           },
           receiver: {
-            name: `${user.firstName} ${user.lastName}`,
-            phone: user.phone,
-            user: user._id,
+            name: `${referrer.firstName} ${referrer.lastName}`,
+            phone: referrer.phone,
+            user: referrer._id,
           },
           amount: referralBonus,
           purpose: 'Referral bonus',

@@ -4,8 +4,11 @@ const { Transaction } = require('../models/transaction');
 const auth = require('../middleware/auth');
 
 router.get('/', auth, async (req, res) => {
-  const transactions = await Transaction.find({
-    'receiver.user': req.user._id,
+  const userId = req.user._id;
+
+  const transactions = await Transaction.find().or({
+    'sender.user': userId,
+    'receiver.user': userId,
   });
 
   res.send(transactions);
