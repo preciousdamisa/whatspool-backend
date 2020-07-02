@@ -31,7 +31,7 @@ router.post('/', async (req, res) => {
         sender: {
           name: 'WhatsPool',
           phone: config.get('whatspoolPhone'),
-          user: user._id, // config.get('whatspoolUser')
+          user: config.get('whatspoolUser'),
         },
         receiver: {
           name: `${user.firstName} ${user.lastName}`,

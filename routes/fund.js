@@ -38,7 +38,7 @@ router.post('/:fundInfo', async (req, res) => {
           sender: {
             name: 'WhatsPool',
             phone: config.get('whatspoolPhone'),
-            user: user._id, // config.get('whatspoolUser')
+            user: config.get('whatspoolUser'),
           },
           receiver: {
             name: `${referrer.firstName} ${referrer.lastName}`,
