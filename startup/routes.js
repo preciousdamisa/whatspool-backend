@@ -3,6 +3,7 @@ const express = require('express');
 const users = require('../routes/users');
 const auth = require('../routes/auth');
 const fund = require('../routes/fund');
+const fundLink = require('../routes/fund-link');
 const manualFund = require('../routes/manual-fund');
 const transactions = require('../routes/transactions');
 const transfers = require('../routes/transfers');
@@ -26,6 +27,7 @@ module.exports = function (app) {
   app.use('/api/transactions', transactions);
   app.use('/api/transfers', transfers);
   app.use('/api/manual-fund', manualFund);
+  app.use('/api/fund-link', fundLink);
   app.use('/api/participants', participants);
   app.use('/api/question', question);
   app.use('/api/quiz-time', quizTime);
