@@ -1,6 +1,7 @@
 const http = require('axios');
 const router = require('express').Router();
 const Joi = require('@hapi/joi');
+const config = require('config');
 
 router.post('/', async (req, res) => {
   const { error } = validate(req.body);
@@ -29,8 +30,7 @@ router.post('/', async (req, res) => {
       },
       {
         headers: {
-          Authorization:
-            'Bearer FLWSECK_TEST-b3c7c8de99decea88a66e17e1f8da899-X',
+          Authorization: `Bearer FLWSECK_TEST-b3c7c8de99decea88a66e17e1f8da899-X`,
         },
       }
     );

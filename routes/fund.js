@@ -9,7 +9,6 @@ const { Transaction } = require('../models/transaction');
 
 router.get('/:fundInfo', async (req, res) => {
   const status = req.query.status;
-  console.log('TRANSACTION STATUS:', status);
   const fundInfo = req.params.fundInfo.split('-');
 
   const userId = fundInfo[0];
