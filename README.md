@@ -2,10 +2,8 @@
 
 TODO:
 
-- In funding (Flutterwave and manual), creating a transaction, Sender should be WhatsPool, with WhatsPool info (phone, user).
-
-After Launch
-
-- Check for any fowl play, like a user changing the current question
-  number. Then update their disqualified status in the participant object.
-- Check responses in the browser, that sensitive data is not included.
+- Show an error page when funding fails via flutterwave.
+- Confirm that funding an account via Flutterwave works.
+- Send reminder messages to participants of WhatsPool.
+- Send welcome emails.
+- Send password reset emails.
