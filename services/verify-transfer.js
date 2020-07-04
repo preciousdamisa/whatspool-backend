@@ -1,19 +1,20 @@
 const config = require('config');
 
-const http = require('./http');
+const axios = require('axios');
 
-const url =
-  'https://ravesandboxapi.flutterwave.com/flwv3-pug/getpaidx/api/v2/verify';
+const url = 'https://api.flutterwave.com/v3/transactions/123456/verify';
 
 async function verifyTransfer(data) {
-  const res = await http.post(url, {
-    SECKEY: 'FLWSECK-26b84e92406f072fb7c6527b758daea2-X',
-    txref: data.txref,
+  const res = await axios.default.get(url, {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer FLWSECK_TEST-b3c7c8de99decea88a66e17e1f8da899-X`,
+    },
   });
 
   if (
     res.data.data.status === 'successful' &&
-    res.data.data.chargecode === '00'
+    res.data.data['tx_ref'] === data.txref
   ) {
     if (res.data.data.amount >= data.amount) {
       return {
