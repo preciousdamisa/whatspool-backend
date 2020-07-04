@@ -6,7 +6,7 @@ const { User, getReferrer } = require('../models/user');
 const { Transfer } = require('../models/transfer');
 const { Transaction } = require('../models/transaction');
 
-router.post('/:fundInfo', async (req, res) => {
+router.get('/:fundInfo', async (req, res) => {
   const status = req.query.status;
   console.log('TRANSACTION STATUS:', status);
   const fundInfo = req.params.fundInfo.split('-');
