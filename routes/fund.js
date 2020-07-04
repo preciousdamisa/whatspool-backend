@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const { nanoid } = require('nanoid');
 const config = require('config');
+const mongoose = require('mongoose');
 
 const { User, getReferrer } = require('../models/user');
 const { Transfer } = require('../models/transfer');
@@ -14,88 +15,96 @@ router.get('/:fundInfo', async (req, res) => {
   const userId = fundInfo[0];
   const amount = fundInfo[1];
 
-  try {
-    const user = await User.findById(userId);
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  const opts = { session };
 
-    // referrer is the user who referred this user.
-    const referrer = await getReferrer(user);
+  if (status === 'successful') {
+    try {
+      const user = await User.findById(userId);
 
-    if (referrer) {
-      const referralBonus = 25;
+      // referrer is the user who referred this user.
+      const referrer = await getReferrer(user);
 
-      // TODO: Sender should be WhatsPool, with WhatsPool info (phone, user).
+      if (referrer) {
+        const referralBonus = 25;
 
-      const transaction = new Transaction({
-        sender: {
-          name: 'WhatsPool',
-          phone: config.get('whatspoolPhone'),
-          user: config.get('whatspoolUser'),
-        },
-        receiver: {
-          name: `${referrer.firstName} ${referrer.lastName}`,
-          phone: referrer.phone,
-          user: referrer._id,
-        },
-        amount: referralBonus,
-        purpose: 'Referral bonus',
-        transactionId: nanoid(),
-        msg: 'Transaction successful',
+        // TODO: Sender should be WhatsPool, with WhatsPool info (phone, user).
+
+        const transaction = new Transaction({
+          sender: {
+            name: 'WhatsPool',
+            phone: config.get('whatspoolPhone'),
+            user: config.get('whatspoolUser'),
+          },
+          receiver: {
+            name: `${referrer.firstName} ${referrer.lastName}`,
+            phone: referrer.phone,
+            user: referrer._id,
+          },
+          amount: referralBonus,
+          purpose: 'Referral bonus',
+          transactionId: nanoid(),
+          msg: 'Transaction successful',
+        });
+
+        await transaction.save(opts);
+
+        await User.updateOne(
+          { _id: user._id },
+          { $inc: { balance: amount } },
+          opts
+        );
+
+        await User.updateOne(
+          { _id: referrer._id },
+          { $inc: { referralBonus } },
+          opts
+        );
+
+        await User.updateOne(
+          { _id: user._id },
+          { $set: { creditedReferrer: true } },
+          opts
+        );
+      } else {
+        await User.updateOne(
+          { _id: user._id },
+          { $inc: { balance: amount } },
+          opts
+        );
+      }
+
+      const transferId = nanoid();
+
+      const transfer = new Transfer({
+        user: user._id,
+        amount,
+        desc: 'In transfer',
+        transferId,
+        mode: 'Flutterwave',
+        msg: 'Funding successful.',
       });
 
-      await transaction.save(opts);
+      await transfer.save(opts);
 
-      await User.updateOne(
-        { _id: user._id },
-        { $inc: { balance: amount } },
-        opts
-      );
+      await session.commitTransaction();
+      session.endSession();
 
-      await User.updateOne(
-        { _id: referrer._id },
-        { $inc: { referralBonus } },
-        opts
-      );
+      res.render('success', {
+        transferId: transfer._id,
+        desc: transfer.desc,
+        amount,
+      });
+    } catch (ex) {
+      console.log(ex);
 
-      await User.updateOne(
-        { _id: user._id },
-        { $set: { creditedReferrer: true } },
-        opts
-      );
-    } else {
-      await User.updateOne(
-        { _id: user._id },
-        { $inc: { balance: amount } },
-        opts
-      );
+      await session.abortTransaction();
+      session.endSession();
+      res.status(500).send('Error in funding wallet via e-gateway.');
     }
-
-    const transferId = nanoid();
-
-    const transfer = new Transfer({
-      user: user._id,
-      amount,
-      desc: 'In transfer',
-      transferId,
-      mode: 'Flutterwave',
-      msg: 'Funding successful.',
-    });
-
-    await transfer.save(opts);
-
-    await session.commitTransaction();
-    session.endSession();
-
-    res.render('success', {
-      transferId: transfer._id,
-      desc: transfer.desc,
-      amount,
-    });
-  } catch (ex) {
-    console.log(ex);
-
-    await session.abortTransaction();
-    session.endSession();
-    res.status(500).send('Error in funding wallet via e-gateway.');
+  } else {
+    res.render('failure');
   }
 });
 
