@@ -5,7 +5,6 @@ const config = require('config');
 const { User, getReferrer } = require('../models/user');
 const { Transfer } = require('../models/transfer');
 const { Transaction } = require('../models/transaction');
-const verifyTransfer = require('../services/verify-transfer');
 
 router.post('/:fundInfo', async (req, res) => {
   const fundInfo = req.params.fundInfo.split('-');
