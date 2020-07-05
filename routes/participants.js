@@ -112,4 +112,10 @@ router.post('/', async (req, res) => {
   }
 });
 
+router.delete('/', async (req, res) => {
+  const result = await Participant.remove({});
+
+  res.send({result, msg: "Participants deleted successfully"});
+});
+
 module.exports = router;

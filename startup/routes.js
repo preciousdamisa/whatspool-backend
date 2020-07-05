@@ -8,7 +8,7 @@ const manualFund = require('../routes/manual-fund');
 const transactions = require('../routes/transactions');
 const transfers = require('../routes/transfers');
 const participants = require('../routes/participants');
-const question = require('../routes/question');
+const questions = require('../routes/questions');
 const { quizTime } = require('../routes/quiz-time');
 const startQuiz = require('../routes/start-quiz');
 const submit = require('../routes/submit');
@@ -29,7 +29,7 @@ module.exports = function (app) {
   app.use('/api/manual-fund', manualFund);
   app.use('/api/fund-link', fundLink);
   app.use('/api/participants', participants);
-  app.use('/api/question', question);
+  app.use('/api/questions', questions);
   app.use('/api/quiz-time', quizTime);
   app.use('/api/start-quiz', startQuiz);
   app.use('/api/submit', submit);
