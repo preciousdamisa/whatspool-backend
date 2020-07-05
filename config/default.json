@@ -2,7 +2,7 @@
     "port": "4000",
     "db": "mongodb://localhost/whatspool",
     "jwtAuthPrivateKey": "unsecureJwtAuthPrivateKey",
-    "whatspoolPhone": "09066581852",
-    "whatspoolUser": "5efe72a5d6f8d00004eb527e",
+    "whatspoolPhone": "07056117234",
+    "whatspoolUser": "5f0193bece3fb41ce838f47c",
     "flutterwaveSecretKey": "FLWSECK_TEST-b3c7c8de99decea88a66e17e1f8da899-X"
 }

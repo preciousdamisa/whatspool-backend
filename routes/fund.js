@@ -28,8 +28,6 @@ router.get('/:fundInfo', async (req, res) => {
       if (referrer) {
         const referralBonus = 25;
 
-        // TODO: Sender should be WhatsPool, with WhatsPool info (phone, user).
-
         const transaction = new Transaction({
           sender: {
             name: 'WhatsPool',

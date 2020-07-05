@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const { nanoid } = require('nanoid');
 const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
 const config = require('config');
@@ -34,9 +35,9 @@ router.post('/', async (req, res) => {
           user: config.get('whatspoolUser'),
         },
         receiver: {
-          name: `${user.firstName} ${user.lastName}`,
-          phone: user.phone,
-          user: user._id,
+          name: `${referrer.firstName} ${referrer.lastName}`,
+          phone: referrer.phone,
+          user: referrer._id,
         },
         amount: referralBonus,
         purpose: 'Referral bonus',
@@ -78,7 +79,7 @@ router.post('/', async (req, res) => {
       amount,
       desc: 'In transfer',
       transferId,
-      mode: 'Bank Tranfer',
+      mode: 'Bank Transfer',
       msg: 'Funding successful.',
     });
 
@@ -87,8 +88,10 @@ router.post('/', async (req, res) => {
     await session.commitTransaction();
     session.endSession();
 
-    res.send('Funding successful!');
+    res.send(transfer);
   } catch (ex) {
+    console.log(ex);
+
     await session.abortTransaction();
     session.endSession();
     res.status(500).send('Error in funding wallet manually.');
