@@ -30,7 +30,7 @@ router.post('/', async (req, res) => {
       },
       {
         headers: {
-          Authorization: `Bearer FLWSECK_TEST-b3c7c8de99decea88a66e17e1f8da899-X`,
+          Authorization: `Bearer ${config.get('flutterwaveSecretKey')}`,
         },
       }
     );
