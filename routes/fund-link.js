@@ -25,7 +25,7 @@ router.post('/', async (req, res) => {
           title: 'WhatsPool',
           description: 'Fund your WhatsPool account.',
           logo:
-            'https://www.uber-assets.com/image/upload/f_auto,q_auto:eco,c_fill,w_956,h_537/v1569012383/assets/f9/2a4534-291c-4c99-9886-d5654fcb8b45/original/Pool.png',
+            'https://scontent.flos2-1.fna.fbcdn.net/v/t1.0-9/106808765_103442878104292_6550632615149142462_o.png?_nc_cat=110&_nc_sid=09cbfe&_nc_eui2=AeHBh33ePVVASi4p_Lm1qESOUxWg6UxCty5TFaDpTEK3Lvpkj6mIuky5TtaEo419hk49TTxIoecYO8qqPIPqO09q&_nc_oc=AQkXA7CXTNUshhgxgI81dzWdh7mFUbIJOfeWksOcDqBf8pr_oepvH3YZd9PxP5it7-M&_nc_ht=scontent.flos2-1.fna&oh=ca881e8b47d5782820472544d01a77c6&oe=5F27D990',
         },
       },
       {

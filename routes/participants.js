@@ -40,20 +40,24 @@ router.post('/', async (req, res) => {
         opts
       );
 
-      const remainingBalance = user.balance + user.referralBonus - amount;
+      const currentBalance = user.balance - amount;
+
+      const remainingBalance = currentBalance + user.referralBonus;
 
       await User.updateOne(
         { _id: user._id },
         { $set: { balance: remainingBalance } },
         opts
       );
+
+      if (user.referralBonus > 0) {
+        await User.updateOne(
+          { _id: user._id },
+          { $set: { referralBonus: 0 } },
+          opts
+        );
+      }
     } else if (user.balance + user.referralBonus >= 100) {
-      await User.updateOne(
-        { _id: user._id },
-        { $inc: { referralBonus: -user.referralBonus } },
-        opts
-      );
-
       const remainingBalance = user.balance + user.referralBonus - amount;
 
       await User.updateOne(
@@ -61,6 +65,8 @@ router.post('/', async (req, res) => {
         { $set: { balance: remainingBalance } },
         opts
       );
+
+      
     } else {
       return res.status(400).send('Insufficient balance.');
     }
