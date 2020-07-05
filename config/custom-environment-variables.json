@@ -1,6 +1,7 @@
 {
     "db": "whatspool_db",
     "whatspoolUser": "whatspoolUser",
+    "whatspoolPhone": "whatspoolPhone",
     "jwtAuthPrivateKey": "whatspool_jwtAuthPrivateKey",
     "flutterwaveSecretKey": "whatspool_flutterwaveSecretKey"
 }

@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const mongoose = require('mongoose');
 const { nanoid } = require('nanoid');
+const config = require('config');
 
 const { User } = require('../models/user');
 const { Participant, validate } = require('../models/participant');
@@ -65,8 +66,6 @@ router.post('/', async (req, res) => {
         { $set: { balance: remainingBalance } },
         opts
       );
-
-      
     } else {
       return res.status(400).send('Insufficient balance.');
     }
@@ -75,12 +74,12 @@ router.post('/', async (req, res) => {
       sender: {
         name: `${user.firstName} ${user.lastName}`,
         phone: user.phone,
-        user: user._id, // config.get('whatspoolUser')
+        user: user._id,
       },
       receiver: {
         name: `WhatsPool`,
-        phone: '09066581852',
-        user: user._id,
+        phone: config.get('whatspoolPhone'),
+        user: config.get('whatspoolUser'),
       },
       amount,
       purpose: 'WhatsPool Registration',
@@ -109,7 +108,7 @@ router.post('/', async (req, res) => {
 
     await session.abortTransaction();
     session.endSession();
-    res.status(500).send('Something failed (T). Please try again');
+    res.status(500).send('Something failed. Please try again');
   }
 });
 
