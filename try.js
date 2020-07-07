@@ -16,3 +16,13 @@
 // seconds = seconds % secondsPerMinute;
 
 // console.log(hours, ":", minutes, ":", seconds);
+// async function generatePassword() {
+//   const bcrypt = require('bcryptjs');
+
+//   const password = '';
+
+//   const hashed = await bcrypt.hash(password, 12);
+//   console.log(hashed);
+// }
+
+// generatePassword();
