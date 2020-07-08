@@ -81,42 +81,42 @@ router.post('/', async (req, res) => {
 });
 
 router.post('/roles/:phone', auth, async (req, res) => {
-  // const isSuperAdmin = req.user.roles.find((r) => r === 'superAdmin');
+  const isSuperAdmin = req.user.roles.find((r) => r === 'Super Admin');
 
-  // if (isSuperAdmin) {
-  const phone = req.params.phone;
+  if (isSuperAdmin) {
+    const phone = req.params.phone;
 
-  try {
-    const user = await User.findOne({ phone });
+    try {
+      const user = await User.findOne({ phone });
 
-    if (!user) return res.status(404).send("User isn't registered!");
+      if (!user) return res.status(404).send("User isn't registered!");
 
-    const validRoles = ['Admin', 'Moderator', 'Super Admin'];
+      const validRoles = ['Admin', 'Moderator'];
 
-    // Check if specified role exists.
-    const result = validRoles.find((r) => r === req.body.role);
-    if (!result) return res.status(400).send('Invalid role.');
+      // Check if specified role exists.
+      const result = validRoles.find((r) => r === req.body.role);
+      if (!result) return res.status(400).send('Invalid role.');
 
-    // Check if the user has the role already.
-    const role = user.roles.find((r) => r === req.body.role);
+      // Check if the user has the role already.
+      const role = user.roles.find((r) => r === req.body.role);
 
-    if (role) {
-      return res.status(400).send(`User has that role already.`);
-    } else {
-      user.roles.push(req.body.role);
+      if (role) {
+        return res.status(400).send(`User has that role already.`);
+      } else {
+        user.roles.push(req.body.role);
+      }
+
+      user.save();
+
+      res.send(_.pick(user, ['_id', 'firstName', 'lastName', 'roles']));
+    } catch (ex) {
+      console.log(ex);
+
+      res.status(500).send('Something failed Please try again.');
     }
-
-    user.save();
-
-    res.send(_.pick(user, ['_id', 'firstName', 'lastName', 'roles']));
-  } catch (ex) {
-    console.log(ex);
-
-    res.status(500).send('Something failed Please try again.');
+  } else {
+    res.status(403).send("Can't add role. User is not a super admin.");
   }
-  // } else {
-  //   res.status(403).send("Can't add role. User is not a super admin.");
-  // }
 });
 
 module.exports = router;
