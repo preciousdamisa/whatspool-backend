@@ -26,3 +26,13 @@
 // }
 
 // generatePassword();
+
+// Add the role field to a user.
+// values: superAdmin, admin, moderator.
+// Super Admn
+// 1. Make other users' admins or moderators.
+// Admin
+// 1. Funding accounts 2. Getting users and participants via phone number
+// 
+// Moderator
+//  3. Adding questions 4. Deleting participants and winners. 5. Deleting questions. 

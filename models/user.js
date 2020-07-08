@@ -43,6 +43,7 @@ const userSchema = new Schema(
       required: true,
       unique: true,
     },
+    roles: [String],
     balance: {
       type: Number,
       min: 0,
@@ -83,6 +84,7 @@ userSchema.methods.genToken = function () {
       lastName: this.lastName,
       email: this.email,
       phone: this.phone,
+      roles: this.roles,
     },
     config.get('jwtAuthPrivateKey'),
     { expiresIn: 3600 }
