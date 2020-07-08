@@ -1,8 +1,8 @@
-const router = require("express").Router();
+const router = require('express').Router();
 
-const { Winner } = require("../models/winner");
+const { Winner } = require('../models/winner');
 
-router.get("/", async (req, res) => {
+router.get('/', async (req, res) => {
   const fetchedWinners = await Winner.find();
 
   const winners = { haveWinners: true };
@@ -33,5 +33,11 @@ function getSecondPlaceWinners(winners) {
 function getThirdPlaceWinners(winners) {
   return winners.slice(3, 6);
 }
+
+router.delete('/', async (req, res) => {
+  const result = await Winner.remove({});
+
+  res.send({ result, msg: 'Winners deleted succesfully' });
+});
 
 module.exports = router;
