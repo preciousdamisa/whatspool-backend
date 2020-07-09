@@ -17,6 +17,14 @@ router.get('/me', auth, async (req, res) => {
   res.send(user);
 });
 
+// Gets the total number of users.
+// Requires authentication and an admin status.
+router.get('/count', auth, admin, async (req, res) => {
+  const count = await User.find().count();
+
+  res.send({ count });
+});
+
 // Gets the user with the specfied phone number.
 // Requires authentication and an admin status.
 router.get('/:phone', auth, admin, async (req, res) => {
@@ -24,17 +32,9 @@ router.get('/:phone', auth, admin, async (req, res) => {
     '-password -__v -updatedAt'
   );
 
-  if (!user) return res.send("User isn't registered yet.");
+  if (!user) return res.status(404).send("User isn't registered yet.");
 
   res.send(user);
-});
-
-// Gets the total number of users.
-// Requires authentication and an admin status.
-router.get('/count', auth, admin, async (req, res) => {
-  const count = await User.find().count();
-
-  res.send({ count });
 });
 
 // Creates a user.
@@ -106,11 +106,11 @@ router.post('/', async (req, res) => {
 
 // Adds a role for a user.
 // Requires authentication and a super admin status.
-router.post('/roles/:phone', auth, async (req, res) => {
+router.post('/roles', auth, async (req, res) => {
   const isSuperAdmin = req.user.roles.find((r) => r === 'Super Admin');
 
   if (isSuperAdmin) {
-    const phone = req.params.phone;
+    const phone = req.body.phone;
 
     try {
       const user = await User.findOne({ phone });
