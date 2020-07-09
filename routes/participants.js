@@ -10,6 +10,13 @@ const auth = require('../middleware/auth');
 const moderator = require('../middleware/moderator');
 const adminOrModerator = require('../middleware/admin-or-moderator');
 
+// Gets the total number of participants.
+router.get('/count', auth, adminOrModerator, async (req, res) => {
+  const count = await Participant.find().count();
+
+  res.send({ count });
+});
+
 // Gets the participant with the given phone number.
 router.get('/:phone', async (req, res) => {
   const participant = await Participant.findOne({ phone: req.params.phone });
@@ -18,13 +25,6 @@ router.get('/:phone', async (req, res) => {
     return res.status(404).send('No participant with the given phone number.');
 
   res.send(participant);
-});
-
-// Gets the total number of participants.
-router.get('/count', auth, adminOrModerator, async (req, res) => {
-  const count = await Participant.find().count();
-
-  res.send({ count });
 });
 
 router.post('/', async (req, res) => {
