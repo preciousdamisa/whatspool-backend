@@ -3,15 +3,18 @@ const Joi = require('@hapi/joi');
 const _ = require('lodash');
 
 const { Question, validate } = require('../models/question');
+const moderator = require('../middleware/moderator');
+const auth = require('../middleware/auth');
 
-router.post('/', async (req, res) => {
+router.post('/', auth, moderator, async (req, res) => {
   const { error } = validate(req.body);
   if (error) {
     return res.status(422).send(error.details[0].message);
   }
 
-  const questions = await Question.find();
-  if (questions.length === 10) {
+  const count = await Question.find().count();
+
+  if (count === 10) {
     return res.status(400).send('Maximum number of questions (10) reached.');
   }
 
@@ -51,7 +54,7 @@ router.get('/:questionNumber', async (req, res) => {
   );
 });
 
-router.delete('/', async (req, res) => {
+router.delete('/', auth, moderator, async (req, res) => {
   const result = await Question.remove({});
 
   res.send({ result, msg: 'Questions deleted succesfully' });

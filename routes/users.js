@@ -5,15 +5,39 @@ const shortid = require('shortid');
 
 const { User, validate } = require('../models/user');
 const auth = require('../middleware/auth');
+const admin = require('../middleware/admin');
 
+// Gets a user with the given ID.
+// Requires authentication.
 router.get('/me', auth, async (req, res) => {
   const user = await User.findById(req.user._id).select(
-    '-password -__v -createdAt -updatedAt'
+    '-password -__v -updatedAt'
   );
 
   res.send(user);
 });
 
+// Gets the user with the specfied phone number.
+// Requires authentication and an admin status.
+router.get('/:phone', auth, admin, async (req, res) => {
+  const user = await User.findOne({ phone: req.params.phone }).select(
+    '-password -__v -updatedAt'
+  );
+
+  if (!user) return res.send("User isn't registered yet.");
+
+  res.send(user);
+});
+
+// Gets the total number of users.
+// Requires authentication and an admin status.
+router.get('/count', auth, admin, async (req, res) => {
+  const count = await User.find().count();
+
+  res.send({ count });
+});
+
+// Creates a user.
 router.post('/', async (req, res) => {
   const { error } = validate(req.body);
   if (error) {
@@ -80,6 +104,8 @@ router.post('/', async (req, res) => {
     );
 });
 
+// Adds a role for a user.
+// Requires authentication and a super admin status.
 router.post('/roles/:phone', auth, async (req, res) => {
   const isSuperAdmin = req.user.roles.find((r) => r === 'Super Admin');
 

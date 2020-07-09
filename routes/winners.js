@@ -1,7 +1,10 @@
 const router = require('express').Router();
 
 const { Winner } = require('../models/winner');
+const moderator = require('../middleware/moderator');
+const auth = require('../middleware/auth');
 
+// Gets all winners.
 router.get('/', async (req, res) => {
   const fetchedWinners = await Winner.find();
 
@@ -34,7 +37,15 @@ function getThirdPlaceWinners(winners) {
   return winners.slice(3, 6);
 }
 
-router.delete('/', async (req, res) => {
+// Gets the total number of winners.
+router.get('/count', async (req, res) => {
+  const count = await Winner.find().count();
+
+  res.send({ count });
+});
+
+// Deletes all winners.
+router.delete('/', auth, moderator, async (req, res) => {
   const result = await Winner.remove({});
 
   res.send({ result, msg: 'Winners deleted succesfully' });

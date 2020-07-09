@@ -7,8 +7,10 @@ const config = require('config');
 const { User, getReferrer } = require('../models/user');
 const { Transfer } = require('../models/transfer');
 const { Transaction } = require('../models/transaction');
+const auth = require('../middleware/auth');
+const admin = require('../middleware/admin');
 
-router.post('/', async (req, res) => {
+router.post('/', auth, admin, async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(422).send(error.details[0].message);
 
@@ -22,7 +24,8 @@ router.post('/', async (req, res) => {
   try {
     const user = await User.findOne({ phone });
 
-    // The user who referred this user.
+    // referrer, is the user who referred the user
+    // whose account is to be funded.
     const referrer = await getReferrer(user);
 
     if (referrer) {
