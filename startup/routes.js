@@ -14,6 +14,7 @@ const startQuiz = require('../routes/start-quiz');
 const submit = require('../routes/submit');
 const winners = require('../routes/winners');
 const messages = require('../routes/messages');
+const contacts = require('../routes/contacts');
 
 const error = require('../middleware/error');
 
@@ -35,6 +36,7 @@ module.exports = function (app) {
   app.use('/api/submit', submit);
   app.use('/api/winners', winners);
   app.use('/api/messages', messages);
+  app.use('/api/contacts', contacts);
 
   app.use(error);
 };
