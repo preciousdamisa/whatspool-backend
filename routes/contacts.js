@@ -10,7 +10,7 @@ router.get('/phone-numbers', auth, admin, async (req, res) => {
   const phones = [];
 
   for (let user of users) {
-    phones.push(parseInt(user.phone));
+    phones.push(parseInt(user.email));
   }
 
   res.send({ count: phones.length, phones });
