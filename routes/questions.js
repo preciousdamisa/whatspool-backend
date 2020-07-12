@@ -37,11 +37,11 @@ router.post('/', auth, moderator, async (req, res) => {
 });
 
 router.get('/:questionNumber', async (req, res) => {
-  let quizTime = await QuizTime.find();
-  quizTime = quizTime[0];
+  // let quizTime = await QuizTime.find();
+  // quizTime = quizTime[0];
 
-  if (!(new Date() > new Date(quizTime.startTime)))
-    return res.status(400).send("Can't get question. Not yet time for quiz.");
+  // if (!(new Date() > new Date(quizTime.startTime)))
+  //   return res.status(400).send("Can't get question. Not yet time for quiz.");
 
   const questionNumber = parseInt(req.params.questionNumber);
 
