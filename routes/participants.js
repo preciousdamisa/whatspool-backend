@@ -17,12 +17,12 @@ router.get('/count', auth, adminOrModerator, async (req, res) => {
   res.send({ count });
 });
 
-// Gets the participant with the given phone number.
-router.get('/:phone', async (req, res) => {
-  const participant = await Participant.findOne({ phone: req.params.phone });
+// Gets the participant with the given user ID.
+router.get('/', auth, async (req, res) => {
+  const participant = await Participant.findOne({ user: req.user._id });
 
   if (!participant)
-    return res.status(404).send('No participant with the given phone number.');
+    return res.status(404).send('No participant with the given user ID.');
 
   res.send(participant);
 });

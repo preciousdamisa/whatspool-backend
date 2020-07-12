@@ -12,7 +12,9 @@ router.get('/:value', auth, admin, async (req, res) => {
   const value = req.params.value;
   for (let user of users) {
     if (value === 'phone-numbers') {
-      values.push(parseInt(user.phone));
+      if (user.phone) {
+        values.push(parseInt(user.phone));
+      }
     } else if (value === 'emails') {
       values.push(user.email);
     }

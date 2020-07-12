@@ -3,6 +3,7 @@ const Joi = require('@hapi/joi');
 const _ = require('lodash');
 
 const { Question, validate } = require('../models/question');
+const QuizTime = require('../models/quiz-time');
 const moderator = require('../middleware/moderator');
 const auth = require('../middleware/auth');
 
@@ -36,6 +37,12 @@ router.post('/', auth, moderator, async (req, res) => {
 });
 
 router.get('/:questionNumber', async (req, res) => {
+  let quizTime = await QuizTime.find();
+  quizTime = quizTime[0];
+
+  if (!(new Date() > new Date(quizTime.startTime)))
+    return res.status(400).send("Can't get question. Not yet time for quiz.");
+
   const questionNumber = parseInt(req.params.questionNumber);
 
   const { error } = validateQuestionNumber({ questionNumber });
