@@ -36,6 +36,20 @@ router.post('/', auth, moderator, async (req, res) => {
   res.status(201).send(question);
 });
 
+router.get('/questions-and-answers', async (req, res) => {
+  let quizTime = await QuizTime.find();
+  quizTime = quizTime[0];
+
+  if (!(new Date() > new Date(quizTime.startTime)))
+    return res
+      .status(400)
+      .send("Can't get questions and answers. Quiz has not ended.");
+
+  const questionsAndAnswers = await Question.find();
+
+  res.send(questionsAndAnswers);
+});
+
 router.get('/:questionNumber', async (req, res) => {
   // let quizTime = await QuizTime.find();
   // quizTime = quizTime[0];
