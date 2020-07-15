@@ -5,15 +5,16 @@ const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
 
 router.get('/:value', auth, admin, async (req, res) => {
+  const value = req.params.value;
+  
   const users = await User.find();
 
   const values = [];
 
-  const value = req.params.value;
   for (let user of users) {
     if (value === 'phone-numbers') {
       if (user.phone) {
-        values.push(parseInt(user.phone));
+        values.push(parseInt('234' + user.phone.slice(1)));
       }
     } else if (value === 'emails') {
       values.push(user.email);
