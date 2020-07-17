@@ -57,7 +57,7 @@ router.post('/', async (req, res) => {
 
   user.password = hashed;
 
-  user.balance = 100;
+  user.balance = 50;
 
   user.referralBonus = 0;
 
