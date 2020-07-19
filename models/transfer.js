@@ -11,7 +11,7 @@ const transferSchema = new Schema(
     },
     amount: {
       type: Number,
-      min: 100,
+      min: 50,
       max: 1000000,
       required: true,
     },
