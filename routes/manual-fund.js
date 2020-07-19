@@ -104,7 +104,7 @@ router.post('/', auth, admin, async (req, res) => {
 function validate(data) {
   const schema = Joi.object({
     phone: Joi.string().trim().length(11).required(),
-    amount: Joi.number().min(100).max(10000).required(),
+    amount: Joi.number().min(50).max(10000).required(),
   });
 
   return schema.validate(data);
