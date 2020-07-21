@@ -78,6 +78,12 @@ router.post('/', async (req, res) => {
 
   user.referrer = referrer;
 
+  // Configure shortid to not generate IDs that contain a -
+  // ref links are splitted on a - in the frontend app.
+  shortid.characters(
+    '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_@'
+  );
+
   user.referralCode = shortid();
 
   if (referrer) {
