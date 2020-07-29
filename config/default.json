@@ -1,6 +1,6 @@
 {
     "port": "4000",
-    "db": "mongodb://localhost/whatspool",
+    "db": "mongodb://localhost:27017/whatspool",
     "jwtAuthPrivateKey": "unsecureJwtAuthPrivateKey",
     "whatspoolPhone": "07056117234",
     "whatspoolUser": "5f0193bece3fb41ce838f47c",

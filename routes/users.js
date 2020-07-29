@@ -50,7 +50,7 @@ router.post('/', async (req, res) => {
   }
 
   user = new User(
-    _.pick(req.body, ['firstName', 'lastName', 'email', 'phone'])
+    _.pick(req.body, ['firstName', 'lastName', 'email', 'phone', 'roles'])
   );
 
   const hashed = await bcrypt.hash(req.body.password, 12);

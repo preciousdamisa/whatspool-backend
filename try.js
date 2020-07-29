@@ -26,7 +26,7 @@
 // }
 
 // generatePassword();
+const fs = require('fs');
+const path = require('path');
 
-const shortid = require('shortid');
-
-console.log(shortid());
+fs.appendFileSync('msg.txt', 'precious@gmail.com,');

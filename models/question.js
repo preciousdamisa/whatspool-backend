@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const Joi = require("@hapi/joi");
+const mongoose = require('mongoose');
+const Joi = require('@hapi/joi');
 
 const Schema = mongoose.Schema;
 
@@ -53,6 +53,11 @@ const questionSchema = new Schema({
     trim: true,
     required: true,
   },
+  explanation: {
+    type: String,
+    minlength: 1,
+    trim: true,
+  },
   no: {
     type: Number,
     min: 1,
@@ -64,13 +69,13 @@ const questionSchema = new Schema({
     type: String,
     minlength: 1,
     max: 250,
-    enum: ['Maths', 'English', 'General', 'Current Affairs',],
+    enum: ['Maths', 'English', 'General', 'Current Affairs'],
     trim: true,
     required: true,
   },
 });
 
-const Question = mongoose.model("Question", questionSchema);
+const Question = mongoose.model('Question', questionSchema);
 
 function validateQuestion(data) {
   const schema = Joi.object({
@@ -81,6 +86,7 @@ function validateQuestion(data) {
     optD: Joi.string().min(1).max(250).trim().required(),
     optE: Joi.string().min(1).max(250).trim().required(),
     ans: Joi.string().min(1).max(1).trim().required(),
+    explanation: Joi.string().min(1).trim(),
     no: Joi.number().min(1).max(10).required(),
     subj: Joi.string().min(1).max(250).trim().required(),
   });

@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const fs = require('fs');
 
 const { User } = require('../models/user');
 const auth = require('../middleware/auth');
@@ -6,7 +7,7 @@ const admin = require('../middleware/admin');
 
 router.get('/:value', auth, admin, async (req, res) => {
   const value = req.params.value;
-  
+
   const users = await User.find();
 
   const values = [];
@@ -17,7 +18,7 @@ router.get('/:value', auth, admin, async (req, res) => {
         values.push(parseInt('234' + user.phone.slice(1)));
       }
     } else if (value === 'emails') {
-      values.push(user.email);
+      fs.appendFile('emails.txt', `${user.email}\n`, () => {});
     }
   }
 
