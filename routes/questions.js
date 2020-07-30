@@ -27,6 +27,7 @@ router.post('/', auth, moderator, async (req, res) => {
     optD: req.body.optD,
     optE: req.body.optE,
     ans: req.body.ans,
+    explanation: req.body.explanation,
     no: req.body.no,
     subj: req.body.subj,
   });
@@ -36,18 +37,33 @@ router.post('/', auth, moderator, async (req, res) => {
   res.status(201).send(question);
 });
 
-router.get('/questions-and-answers', async (req, res) => {
+router.get('/questions-and-answers', auth, async (req, res) => {
   let quizTime = await QuizTime.find();
   quizTime = quizTime[0];
 
-  if (!(new Date() > new Date(quizTime.startTime)))
-    return res
-      .status(400)
-      .send("Can't get questions and answers. Quiz has not ended.");
+  const quizEndTime = new Date(
+    new Date(quizTime.startTime).getTime() + 1000 * 60 * 10
+  );
 
-  const questionsAndAnswers = await Question.find();
+  const isAdmin = req.user.roles.find((r) => r === 'Admin');
 
-  res.send(questionsAndAnswers);
+  console.log('Has quiz ended', new Date() > quizEndTime);
+
+  console.log('isAdmin', isAdmin);
+
+  if (new Date() > quizEndTime) {
+    const questionsAndAnswers = await Question.find();
+
+    return res.send(questionsAndAnswers);
+  } else if (isAdmin) {
+    const questionsAndAnswers = await Question.find();
+
+    return res.send(questionsAndAnswers);
+  }
+
+  return res
+    .status(400)
+    .send("Can't get questions and answers. Quiz has not ended.");
 });
 
 router.get('/:questionNumber', async (req, res) => {

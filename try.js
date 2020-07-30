@@ -26,7 +26,3 @@
 // }
 
 // generatePassword();
-const fs = require('fs');
-const path = require('path');
-
-fs.appendFileSync('msg.txt', 'precious@gmail.com,');
