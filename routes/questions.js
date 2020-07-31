@@ -50,20 +50,9 @@ router.get('/questions-and-answers', auth, async (req, res) => {
   console.log('Has quiz ended', new Date() > quizEndTime);
 
   console.log('isAdmin', isAdmin);
+  const questionsAndAnswers = await Question.find();
 
-  if (new Date() > quizEndTime) {
-    const questionsAndAnswers = await Question.find();
-
-    return res.send(questionsAndAnswers);
-  } else if (isAdmin) {
-    const questionsAndAnswers = await Question.find();
-
-    return res.send(questionsAndAnswers);
-  }
-
-  return res
-    .status(400)
-    .send("Can't get questions and answers. Quiz has not ended.");
+  return res.send(questionsAndAnswers);
 });
 
 router.get('/:questionNumber', async (req, res) => {
