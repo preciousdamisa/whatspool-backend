@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
@@ -6,7 +6,13 @@ const transferSchema = new Schema(
   {
     user: {
       type: Schema.Types.ObjectId,
-      ref: "User",
+      ref: 'User',
+      required: true,
+    },
+    phone: {
+      type: String,
+      min: 11,
+      max: 11,
       required: true,
     },
     amount: {
@@ -15,12 +21,6 @@ const transferSchema = new Schema(
       max: 1000000,
       required: true,
     },
-    // charge: {
-    //   type: Number,
-    //   min: 3,
-    //   max: 1000000,
-    //   required: true
-    // },
     desc: {
       type: String,
       minlength: 2,
@@ -35,7 +35,7 @@ const transferSchema = new Schema(
     },
     mode: {
       type: String,
-      enum: ["Flutterwave", 'Bank Transfer'],
+      enum: ['Flutterwave', 'Bank Transfer'],
       required: true,
     },
     msg: {
@@ -50,4 +50,4 @@ const transferSchema = new Schema(
   { timestamps: true }
 );
 
-exports.Transfer = mongoose.model("Transfer", transferSchema);
+exports.Transfer = mongoose.model('Transfer', transferSchema);

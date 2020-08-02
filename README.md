@@ -2,7 +2,6 @@
 
 TODO:
 
-- Add the phone to transfer doc to enable finding users easily.
 - Only get a question if its time for quiz. Requires changes to how error
 is handled in the quiz page in the frontend.
 - Add the history feature.

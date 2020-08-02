@@ -76,6 +76,7 @@ router.get('/:fundInfo', async (req, res) => {
 
       const transfer = new Transfer({
         user: user._id,
+        phone: user.phone,
         amount,
         desc: 'In transfer',
         transferId,

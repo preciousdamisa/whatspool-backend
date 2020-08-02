@@ -27,7 +27,6 @@ router.post('/', auth, moderator, async (req, res) => {
     optD: req.body.optD,
     optE: req.body.optE,
     ans: req.body.ans,
-    explanation: req.body.explanation,
     no: req.body.no,
     subj: req.body.subj,
   });

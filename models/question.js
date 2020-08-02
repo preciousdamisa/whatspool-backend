@@ -53,11 +53,6 @@ const questionSchema = new Schema({
     trim: true,
     required: true,
   },
-  explanation: {
-    type: String,
-    minlength: 1,
-    trim: true,
-  },
   no: {
     type: Number,
     min: 1,
@@ -86,7 +81,6 @@ function validateQuestion(data) {
     optD: Joi.string().min(1).max(250).trim().required(),
     optE: Joi.string().min(1).max(250).trim().required(),
     ans: Joi.string().min(1).max(1).trim().required(),
-    explanation: Joi.string().min(1).trim(),
     no: Joi.number().min(1).max(10).required(),
     subj: Joi.string().min(1).max(250).trim().required(),
   });
