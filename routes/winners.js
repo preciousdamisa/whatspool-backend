@@ -48,6 +48,24 @@ router.get('/count', async (req, res) => {
   res.send({ count });
 });
 
+router.get('/leaderboard', async (req, res) => {
+  let users = await User.find({ totalAmountWon: { $gt: 0 } }).select(
+    'firstName lastName playedCount wins totalAmountWon'
+  );
+
+  users = users.map((u) => {
+    return {
+      firstName: u.firstName,
+      lastName: u.lastName[0] + '.',
+      playedCount: u.playedCount,
+      winCount: u.wins.length,
+      totalAmountWon: u.totalAmountWon,
+    };
+  });
+
+  res.send(users);
+});
+
 // Deletes all winners.
 router.delete('/', auth, moderator, async (req, res) => {
   const winners = await Winner.find();

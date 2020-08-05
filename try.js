@@ -26,3 +26,5 @@
 // }
 
 // generatePassword();
+
+console.log('pre'[0]);
