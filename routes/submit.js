@@ -54,6 +54,7 @@ router.post('/', async (req, res) => {
               firstName: participant.firstName,
               lastName: participant.lastName,
               email: participant.email,
+              user: participant.user,
               phone: participant.phone,
               score: participant.score + 1,
               finished: true,

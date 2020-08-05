@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
@@ -26,6 +26,11 @@ const winnerSchema = new Schema(
       required: true,
       unique: true,
     },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
     phone: {
       type: String,
       minlength: 11,
@@ -49,4 +54,4 @@ const winnerSchema = new Schema(
   { timestamps: true }
 );
 
-exports.Winner = mongoose.model("Winner", winnerSchema);
+exports.Winner = mongoose.model('Winner', winnerSchema);

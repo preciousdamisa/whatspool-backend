@@ -27,6 +27,7 @@ router.get('/', auth, async (req, res) => {
   res.send(participant);
 });
 
+// Creates a participant.
 router.post('/', async (req, res) => {
   let { error } = validate(req.body);
   if (error) return res.status(422).send(error.details[0].message);
@@ -101,6 +102,7 @@ router.post('/', async (req, res) => {
 
     await transaction.save(opts);
 
+    
     let participant = new Participant({
       user: req.body.userId,
       firstName: req.body.firstName,
@@ -108,9 +110,11 @@ router.post('/', async (req, res) => {
       email: req.body.email,
       phone: req.body.phone,
     });
-
+    
     participant = await participant.save(opts);
-
+    
+    await User.updateOne({ _id: user._id }, { $inc: { playedCount: 1 } }, opts);
+    
     await session.commitTransaction();
     session.endSession();
 

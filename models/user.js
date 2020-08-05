@@ -3,6 +3,8 @@ const Joi = require('@hapi/joi');
 const jwt = require('jsonwebtoken');
 const config = require('config');
 
+const { winSchema } = require('./win');
+
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema(
@@ -44,6 +46,17 @@ const userSchema = new Schema(
       unique: true,
     },
     roles: [String],
+    wins: [winSchema],
+    playedCount: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    totalAmountWon: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
     balance: {
       type: Number,
       min: 0,

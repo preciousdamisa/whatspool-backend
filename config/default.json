@@ -4,5 +4,8 @@
     "jwtAuthPrivateKey": "unsecureJwtAuthPrivateKey",
     "whatspoolPhone": "07056117234",
     "whatspoolUser": "5f0193bece3fb41ce838f47c",
-    "flutterwaveSecretKey": "FLWSECK_TEST-b3c7c8de99decea88a66e17e1f8da899-X"
+    "flutterwaveSecretKey": "FLWSECK_TEST-b3c7c8de99decea88a66e17e1f8da899-X",
+    "firstPlacePrize": "2000",
+    "secondPlacePrize": "1000",
+    "thirdPlacePrize": "500"
 }
